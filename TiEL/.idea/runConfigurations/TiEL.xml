@@ -1,0 +1,17 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="TiEL" type="Application" factoryName="Application" nameIsGenerated="true">
+    <option name="MAIN_CLASS_NAME" value="de.thm.asc.tiel.interpreter.TiEL" />
+    <module name="interpreter.main" />
+    <option name="PROGRAM_PARAMETERS" value="equal.tiel --tokens --ast" />
+    <option name="WORKING_DIRECTORY" value="examples" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="de.thm.asc.tiel.interpreter.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

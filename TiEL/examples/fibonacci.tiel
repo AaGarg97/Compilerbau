@@ -1,0 +1,13 @@
+// Example used in the lecture notes, pls. don't touch.
+fun fib(n) {
+    if n == 0 then return 0;
+    else if n == 1 then return 1;
+    else return fib(n - 1) + fib(n - 2);
+}
+var i = 0;
+while i < 11 do {
+    print(i);
+    print(fib(i));
+    print("");
+    i = i + 1;
+}

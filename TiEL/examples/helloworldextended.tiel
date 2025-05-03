@@ -1,0 +1,12 @@
+// Example used in the lecture notes, pls. don't touch.
+fun foo(flag) {
+    bar(1);
+    if flag then return "World!";
+}
+fun bar(i) {
+    while i < 2 do {
+        print("Hello"); // built-in function print
+        i = i + 1;
+    }
+}
+print(foo(true));
