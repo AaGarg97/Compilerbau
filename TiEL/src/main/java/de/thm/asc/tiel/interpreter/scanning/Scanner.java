@@ -77,6 +77,8 @@ public class Scanner {
             case ')' -> addToken(RIGHT_PAREN);
             case '{' -> addToken(LEFT_BRACE);
             case '}' -> addToken(RIGHT_BRACE);
+            case '[' -> addToken(LEFT_BRACKET);
+            case ']' -> addToken(RIGHT_BRACKET);
             case ';' -> addToken(SEMICOLON);
             case ',' -> addToken(COMMA);
             case '-' -> addToken(MINUS);
@@ -96,7 +98,11 @@ public class Scanner {
             case '"' -> string();
             default -> {
                 if (isDigit(c)) {
-                    number();
+                    if(c == '0' && peek() == 'x'){
+                        hexnumber();
+                    }else{
+                        number();
+                    }
                 } else if (isAlpha(c)) {
                     identifier();
                 } else {
@@ -120,12 +126,24 @@ public class Scanner {
      * Scans a numeric value.
      */
     private void number() {
+
         while (isDigit(peek())) advance();
         if (peek() == '.' && isDigit(peekNext())) {
             advance();
             while (isDigit(peek())) advance();
         }
         addToken(NUMBER, Double.parseDouble(source.substring(start, current)));
+
+    }
+    /**
+     * Scans a hex numeric value.
+     */
+    private void hexnumber() {
+    //Hexadezimal
+        advance(); //x
+        while (isHex(peek())) advance();
+        int value = Integer.parseInt(source.substring(start+2, current), 16);
+        addToken(NUMBER, (double)(value));
     }
 
     /**
@@ -202,6 +220,17 @@ public class Scanner {
      */
     private boolean isDigit(char c) {
         return c >= '0' && c <= '9';
+    }
+    /**
+     * Checks if a character is a hexadecimal.
+     *
+     * @param c The character to check.
+     * @return True if a hexa, false otherwise.
+     */
+    private boolean isHex(char c) {
+        return  c >= '0' && c <= '9'||
+                c >= 'a' && c <= 'f'||
+                c >= 'A' && c <= 'F';
     }
 
     /**
