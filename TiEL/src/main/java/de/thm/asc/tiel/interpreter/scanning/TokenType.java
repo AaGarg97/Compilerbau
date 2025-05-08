@@ -26,8 +26,6 @@ public enum TokenType {
     RIGHT_PAREN,    // )
     LEFT_BRACE,     // {
     RIGHT_BRACE,    // }
-    LEFT_BRACKET,   // [
-    RIGHT_BRACKET,  // ]
     COMMA,          // ,
     MINUS,          // -
     PLUS,           // +
@@ -42,6 +40,7 @@ public enum TokenType {
     IDENTIFIER,     // Variable or function name
     NUMBER,         // Numeric literal
     STRING,         // String literal
+    ARRAY,          // Array
 
     // End of file marker
     EOF            // Signals the end of the source input

@@ -77,8 +77,7 @@ public class Scanner {
             case ')' -> addToken(RIGHT_PAREN);
             case '{' -> addToken(LEFT_BRACE);
             case '}' -> addToken(RIGHT_BRACE);
-            case '[' -> addToken(LEFT_BRACKET);
-            case ']' -> addToken(RIGHT_BRACKET);
+            case '[' -> arrayLiteral();
             case ';' -> addToken(SEMICOLON);
             case ',' -> addToken(COMMA);
             case '-' -> addToken(MINUS);
@@ -139,11 +138,52 @@ public class Scanner {
      * Scans a hex numeric value.
      */
     private void hexnumber() {
-    //Hexadezimal
+    //Hexdezimal
         advance(); //x
         while (isHex(peek())) advance();
-        int value = Integer.parseInt(source.substring(start+2, current), 16);
+        int value = calcHex(source.substring(start+2, current));
         addToken(NUMBER, (double)(value));
+    }
+
+    private int calcHex(String hex){
+        return Integer.parseInt(hex, 16);
+    }
+
+    private void arrayLiteral() {
+        //advance(); // [
+        var list = new ArrayList<Token>();
+        var tempToken = 0;
+        var ausgabe = "[";
+        while (peek() != ']' && !isAtEnd()) {
+
+            //Falls Hex Zahl
+            if(peek() == '0' && peekNext() == 'x'){
+                advance(); //0
+                int hexStart = current;
+                var x = peek();
+                advance(); //x
+                x= peek();
+                while (isHex(peek())){
+                    boolean a = isHex(peek());
+                    advance();
+                }
+                int value = calcHex(source.substring(hexStart+1, current));
+                ausgabe = ausgabe + value;
+
+            }else{
+                ausgabe += peek();
+                advance();
+            }
+
+        }
+        if (isAtEnd()) {
+            throw new ScanningError("Unterminated string.", line);
+        }
+        advance(); // ]
+        System.out.println(ausgabe+"]");
+        addToken(ARRAY, ausgabe+"]");
+
+
     }
 
     /**
