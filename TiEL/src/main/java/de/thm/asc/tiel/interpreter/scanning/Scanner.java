@@ -85,7 +85,16 @@ public class Scanner {
             case '+' -> addToken(PLUS);
             case '*' -> addToken(STAR);
             case '=' -> addToken(match('=') ? EQUAL_EQUAL : EQUAL);
-            case '<' -> addToken(LESS);
+            case '<' -> addToken(match('=') ? LESS_THAN : LESS);
+            case '>' -> addToken(match('=') ? MORE_THAN : MORE);
+            case '!' -> {
+                if(match('=')){
+                    addToken(NOT_EQUAL);
+                } else{
+                    throw new ScanningError("Unexpected character.", line);
+                }
+            }
+
             case '/' -> {
                 if (match('/')) {
                     while (peek() != '\n' && !isAtEnd()) advance();

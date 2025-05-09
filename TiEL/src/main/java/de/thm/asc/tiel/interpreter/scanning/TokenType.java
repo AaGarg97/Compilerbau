@@ -36,7 +36,11 @@ public enum TokenType {
     SEMICOLON,      // ;
     EQUAL,          // =
     EQUAL_EQUAL,    // ==
+    NOT_EQUAL,      // !=
     LESS,           // <
+    MORE,           // >
+    LESS_THAN,
+    MORE_THAN,
 
     // Identifiers and Literals
     IDENTIFIER,     // Variable or function name
