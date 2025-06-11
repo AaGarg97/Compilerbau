@@ -380,6 +380,11 @@ public class Parser {
         while (true) {
             if (match(LEFT_PAREN)) {
                 expr = finishCall(expr);
+            } else if (match(LEFT_BRACKET)) {
+                var leftBracket = previous();
+                var index = expression(); // der Ausdruck innerhalb der Klammern
+                var rightBracket = consume(RIGHT_BRACKET, "Expect ']' after index.");
+                expr = new IndexExpr(expr, leftBracket, index, rightBracket);
             } else {
                 break;
             }
@@ -411,7 +416,19 @@ public class Parser {
             consume(RIGHT_PAREN, "Expect ')' after expression.");
             return expr;
         }
+        if (match(LEFT_BRACKET)) {
+            Token left = previous();
+            List<Expr> elements = new ArrayList<>();
 
+            if (!check(RIGHT_BRACKET)) {
+                do {
+                    elements.add(expression());
+                } while (match(COMMA));
+            }
+
+            Token right = consume(RIGHT_BRACKET, "Erwarte ']' am Ende eines Array-Ausdrucks.");
+            return new ArrayExpr(left, right, elements);
+        }
         throw new ParsingError("Expect expression.", peek().line());
     }
 

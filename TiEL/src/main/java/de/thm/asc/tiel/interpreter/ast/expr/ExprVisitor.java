@@ -13,4 +13,6 @@ public interface ExprVisitor<R> {
     R visitLogicalExpr(LogicalExpr expr);
     R visitUnaryExpr(UnaryExpr expr);
     R visitVariableExpr(VariableExpr expr);
+    R visitArrayExpr(ArrayExpr expr);
+    R visitIndexExpr(IndexExpr expr);
 }

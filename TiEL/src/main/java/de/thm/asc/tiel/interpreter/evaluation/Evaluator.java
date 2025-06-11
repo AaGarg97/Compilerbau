@@ -279,6 +279,38 @@ public class Evaluator implements ExprVisitor<Object>, StmtVisitor<Void> {
     }
 
     @Override
+    public Object visitArrayExpr(ArrayExpr expr) {
+        List<Object> elements = new ArrayList<>();
+        for (Expr element : expr.arguments) {
+            elements.add(evaluate(element));
+        }
+        return elements;
+    }
+
+    @Override
+    public Object visitIndexExpr(IndexExpr expr) {
+        Object array = evaluate(expr.array);
+        Object index = evaluate(expr.index);
+
+        if (!(array instanceof List<?>)) {
+            throw new RuntimeError("Can only index arrays.");
+        }
+
+        if (!(index instanceof Double d)) {
+            throw new RuntimeError("Array index must be a number.");
+        }
+
+        int idx = d.intValue();
+        List<?> list = (List<?>) array;
+
+        if (idx < 0 || idx >= list.size()) {
+            throw new RuntimeError("Array index out of bounds.");
+        }
+
+        return list.get(idx);
+    }
+
+    @Override
     public Void visitBlockStmt(BlockStmt stmt) {
         executeBlock(stmt.statements, new Environment(environment));
         return null;

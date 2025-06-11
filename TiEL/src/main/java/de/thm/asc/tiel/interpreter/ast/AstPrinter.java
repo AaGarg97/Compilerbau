@@ -48,6 +48,16 @@ public class AstPrinter implements ExprVisitor<String>, StmtVisitor<String> {
     }
 
     @Override
+    public String visitArrayExpr(ArrayExpr expr) {
+        return sExpr(ArrayExpr.class.getSimpleName(), expr.leftBracket, expr.arguments, expr.rightBracket);
+    }
+
+    @Override
+    public String visitIndexExpr(IndexExpr expr) {
+        return sExpr(IndexExpr.class.getSimpleName(), expr.array,expr.index);
+    }
+
+    @Override
     public String visitAssignExpr(AssignExpr expr) {
         return sExpr(AssignExpr.class.getSimpleName(), expr.name.lexeme(), expr.value);
     }
