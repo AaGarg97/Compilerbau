@@ -59,7 +59,7 @@ public class AstPrinter implements ExprVisitor<String>, StmtVisitor<String> {
 
     @Override
     public String visitAssignExpr(AssignExpr expr) {
-        return sExpr(AssignExpr.class.getSimpleName(), expr.name.lexeme(), expr.value);
+        return sExpr(AssignExpr.class.getSimpleName(), expr.name, expr.value);
     }
 
     @Override

@@ -223,10 +223,11 @@ public class Parser {
             var value = assignment();
 
             if (expr instanceof VariableExpr v) {
-                Token name = v.name;
-                return new AssignExpr(name, value);
+                return new AssignExpr(v, value);
             }
-
+            if (expr instanceof IndexExpr v) {
+                return new AssignExpr(v, value);
+            }
             throw new ParsingError("Invalid assignment target.", equals.line());
         }
 
@@ -275,7 +276,7 @@ public class Parser {
     private Expr equality() {
         var expr = comparison();
 
-        while (match(EQUAL_EQUAL)) {
+        while (match(EQUAL_EQUAL, NOT_EQUAL)) {
             var operator = previous();
             var right = comparison();
             expr = new BinaryExpr(expr, operator, right);
@@ -292,7 +293,7 @@ public class Parser {
     private Expr comparison() {
         var expr = term();
 
-        while (match(LESS)) {
+        while (match(LESS, LESS_THAN, MORE, MORE_THAN)) {
             var operator = previous();
             var right = term();
             expr = new BinaryExpr(expr, operator, right);

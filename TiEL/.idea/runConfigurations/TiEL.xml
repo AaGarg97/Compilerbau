@@ -2,7 +2,7 @@
   <configuration default="false" name="TiEL" type="Application" factoryName="Application" nameIsGenerated="true">
     <option name="MAIN_CLASS_NAME" value="de.thm.asc.tiel.interpreter.TiEL" />
     <module name="interpreter.main" />
-    <option name="PROGRAM_PARAMETERS" value="equal.tiel --tokens --ast" />
+    <option name="PROGRAM_PARAMETERS" value="equal.tiel --ast" />
     <option name="WORKING_DIRECTORY" value="examples" />
     <extension name="coverage">
       <pattern>

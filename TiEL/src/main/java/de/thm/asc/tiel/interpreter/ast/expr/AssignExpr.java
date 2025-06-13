@@ -1,13 +1,10 @@
 package de.thm.asc.tiel.interpreter.ast.expr;
-
-import de.thm.asc.tiel.interpreter.scanning.Token;
-
 public class AssignExpr extends Expr {
 
-    public final Token name;
+    public final Expr name;
     public final Expr value;
 
-    public AssignExpr(Token name, Expr value) {
+    public AssignExpr(Expr name, Expr value) {
         this.name = name;
         this.value = value;
     }
