@@ -48,6 +48,37 @@ public class Evaluator implements ExprVisitor<Object>, StmtVisitor<Void> {
                 return "<native fn>";
             }
         });
+        globals.define("newarray", new TiELCallable() {
+            @Override
+            public int arity() { return 2; }
+            @Override
+            public Object call(Evaluator evaluator, List<Object> arguments) {
+                int length = ((Double) arguments.get(0)).intValue();
+                Object value = arguments.get(1);
+                List<Object> arr = new ArrayList<>();
+                for (int i = 0; i < length; i++) {
+                    arr.add(value);
+                }
+                return arr;
+            }
+            @Override
+            public String toString() { return "<native fn>"; }
+        });
+
+        globals.define("length", new TiELCallable() {
+            @Override
+            public int arity() { return 1; }
+            @Override
+            public Object call(Evaluator evaluator, List<Object> arguments) {
+                Object arr = arguments.get(0);
+                if (!(arr instanceof List<?>)) {
+                    throw new RuntimeError("Argument to length() must be an array.");
+                }
+                return (double) ((List<?>) arr).size();
+            }
+            @Override
+            public String toString() { return "<native fn>"; }
+        });
     }
 
     /**
@@ -183,9 +214,33 @@ public class Evaluator implements ExprVisitor<Object>, StmtVisitor<Void> {
     public Object visitAssignExpr(AssignExpr expr) {
         var value = evaluate(expr.value);
 
-        //environment.assign(expr.name, value);
+        if (expr.name instanceof VariableExpr varExpr) {
+            environment.assign(varExpr.name.lexeme(), value);
+            return value;
+        }
 
-        return null;
+        if (expr.name instanceof IndexExpr indexExpr) {
+            var array = evaluate(indexExpr.array);
+            var index = evaluate(indexExpr.index);
+
+            if (!(array instanceof List)) {
+                throw new RuntimeError("Left-hand side is not an array.");
+            }
+            if (!(index instanceof Double d)) {
+                throw new RuntimeError("Index is not a number.");
+            }
+
+            int i = d.intValue();
+            List<Object> list = (List<Object>) array;
+            if (i < 0 || i >= list.size()) {
+                throw new RuntimeError("Array index out of bounds.");
+            }
+
+            list.set(i, value);
+            return value;
+        }
+
+        throw new RuntimeError("Invalid assignment target.");
     }
 
     @Override
@@ -195,9 +250,22 @@ public class Evaluator implements ExprVisitor<Object>, StmtVisitor<Void> {
 
         return switch (expr.operator.type()) {
             case EQUAL_EQUAL -> isEqual(left, right);
+            case NOT_EQUAL -> !isEqual(left, right);
             case LESS -> {
                 checkNumberOperands(expr.operator, left, right);
                 yield (double) left < (double) right;
+            }
+            case LESS_THAN -> {
+                checkNumberOperands(expr.operator, left, right);
+                yield (double) left <= (double) right;
+            }
+            case MORE -> {
+                checkNumberOperands(expr.operator, left, right);
+                yield (double) left > (double) right;
+            }
+            case MORE_THAN -> {
+                checkNumberOperands(expr.operator, left, right);
+                yield (double) left >= (double) right;
             }
             case MINUS -> {
                 checkNumberOperands(expr.operator, left, right);
@@ -280,12 +348,33 @@ public class Evaluator implements ExprVisitor<Object>, StmtVisitor<Void> {
 
     @Override
     public Object visitArrayExpr(ArrayExpr expr) {
-        return null;
+        List<Object> elements = new ArrayList<>();
+        for (Expr element : expr.arguments) {
+            elements.add(evaluate(element));
+        }
+        return elements;
     }
 
     @Override
     public Object visitIndexExpr(IndexExpr expr) {
-        return null;
+        Object array = evaluate(expr.array);
+        Object indexObj = evaluate(expr.index);
+
+        if (!(array instanceof List<?>)) {
+            throw new RuntimeError("Only arrays can be indexed.");
+        }
+        if (!(indexObj instanceof Double)) {
+            throw new RuntimeError("Array index must be a number.");
+        }
+
+        List<?> list = (List<?>) array;
+        int index = ((Double) indexObj).intValue();
+
+        if (index < 0 || index >= list.size()) {
+            throw new RuntimeError("Array index out of bounds.");
+        }
+
+        return list.get(index);
     }
 
 
